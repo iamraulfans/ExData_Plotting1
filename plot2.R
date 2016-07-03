@@ -1,0 +1,12 @@
+library(httr)
+url <- "https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip"
+download.file(url, destfile = "household_power_consumption.zip")
+unzip("household_power_consumption.zip")
+housedata <- read.table("household_power_consumption.txt", header = TRUE, na.strings = "?", sep = ";", as.is = TRUE)
+data <- subset(housedata, Date == "1/2/2007" | Date == "2/2/2007")
+data$Time <- paste(data$Date, data$Time, sep = ".")
+data$Date <- as.Date(data$Date, format='%d/%m/%Y')
+data$Time <- strptime(data$Time, format = '%d/%m/%Y.%H:%M:%S')
+with(data, plot(Time, Global_active_power, type = "l", xlab = "", ylab = "Global Active Power (kilowatts)"))
+dev.copy(png, file = "plot2.png")
+dev.off()
